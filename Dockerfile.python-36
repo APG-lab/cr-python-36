@@ -1,0 +1,46 @@
+FROM ubuntu:jammy
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+	--no-install-recommends \
+	build-essential \
+	software-properties-common \
+	dirmngr \
+	locales
+RUN locale-gen en_US.UTF-8
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+RUN apt-get install -y \
+	software-properties-common \
+	make \
+	zlib1g-dev \
+	libbz2-dev \
+	pkg-config \
+	libreadline-dev \
+	libncurses5-dev \
+	libncursesw5-dev \
+	libsqlite3-dev \
+	wget \
+	curl \
+	llvm \
+	xz-utils \
+	tk-dev \
+	libffi-dev \
+	libbz2-dev \
+	libdeflate-dev \
+	liblzma-dev \
+	libssl-dev \
+	libgdbm-dev \
+	libnss3-dev \
+	libedit-dev \
+	libc6-dev \
+	unzip
+WORKDIR /app/tools/python/3.6.15
+RUN echo "hello"
+WORKDIR /app/sources
+COPY resources/Python-3.6.15.tar.xz .
+RUN tar -xJf Python-3.6.15.tar.xz && \
+	cd Python-3.6.15 && \
+	./configure --prefix=/app/tools/python/3.6.15 --enable-optimizations --with-lto && \
+	make -j 2 && \
+	make install
+ENV PATH="/app/tools/python/3.6.15/bin:${PATH}"
+RUN cd /app && rm -r sources
+
